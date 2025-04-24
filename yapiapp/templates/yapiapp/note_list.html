@@ -8,10 +8,15 @@
     <h1>Notes:</h1>
     <ul>
         {% for note in notes %}
-           <li><strong>note.title</strong>: {{note.content}}</li>
-        {% empty %}
-            <li> No lines yet! </li>
-        {% endfor %}
+        <p>
+          <strong>{{ note.title }}</strong><br>
+          {{ note.content }}<br>
+          <a href="{% url 'edit_note' note.pk %}">Edit</a>
+          <a href="{% url 'delete_note' note.pk %}">Delete</a>
+
+        </p>
+      {% endfor %}
+      
     </ul>
 </body>
 </html>
