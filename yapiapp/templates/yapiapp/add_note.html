@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Note</title>
-</head>
-<body>
+{% extends 'yapiapp/base.html' %}
+
+{% block title %}Add{% endblock %}
+
+{% block content %}
     <h2>Add a New Note</h2>
     <form method='POST'>
         {% csrf_token %}
@@ -11,5 +10,5 @@
         <button type="submit"> Add Note</button>
     </form>
     <a href="{% url 'note_list' %}"> Back to notes </a>
-</body>
-</html>
+
+{% endblock %}

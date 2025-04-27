@@ -2,14 +2,17 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from .models import Note
-from .forms import NoteForm, RegisterForm
+from .forms import NoteForm, RegisterForm, UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 # Create your views here.
 
 @login_required
 
 def note_list(request):
-    notes= Note.objects.all()
+    
+    notes = Note.objects.filter(user=request.user)
+
     return render(request, 'yapiapp/note_list.html',{'notes':notes})
 
 @login_required
@@ -21,7 +24,7 @@ def add_note(request):
             note = form.save(commit=False)  # don't save yet
             note.user = request.user        # assign user to note
             note.save() 
-            form.save()
+            messages.success(request,'Note added successfully! ')
             return redirect('note_list')
     else:
          form = NoteForm()
@@ -36,6 +39,7 @@ def edit_note(request, pk):
         form = NoteForm(request.POST, instance= note)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Note updated successfully!')
             return redirect('note_list')
     else: 
         form= NoteForm(instance=note)
@@ -47,17 +51,30 @@ def delete_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
     if request.method== 'POST':
         note.delete()
+        messages.success(request,'Note deleted successfully!')
         return redirect('note_list')
     return render(request, 'yapiapp/delete_note.html', {'note': note})
 
 
+ 
+
 def register_view(request):
-    if request.method =='POST':
-        form= RegisterForm(request.POST)
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('note_list.html')
+            # Create the user
+            form.save()
+            # Display success message
+            messages.success(request, 'Account created successfully! You can now log in.')
+            # Redirect to login page
+            return redirect('login')  # Ensure this 'login' matches the URL name in urls.py
+        else:
+            # If form is invalid, display error message
+            print(form.errors)  # <--- Add this line for debugging
+
+            messages.error(request, 'Please correct the errors below.')
     else:
-        form = RegisterForm()
-    return render(request, 'registration/register.html', {'form':form})
+        form = UserCreationForm()
+
+    return render(request, 'registration/register.html', {'form': form})

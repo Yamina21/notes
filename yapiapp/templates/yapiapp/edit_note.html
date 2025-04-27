@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Note</title>
-</head>
-<body>
+{% extends 'yapiapp/base.html' %}
+
+{% block title %}Edit{% endblock %}
+
+{% block content %}
     <h2>Edit Note</h2>
 
     <form method="post">
@@ -13,5 +12,5 @@
     </form>
 
     <a href="{% url 'note_list' %}">Back</a>
-</body>
-</html>
+
+{% endblock %}
