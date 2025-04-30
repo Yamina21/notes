@@ -5,15 +5,35 @@ from .models import Note
 from .forms import NoteForm, RegisterForm, UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import NoteSerializer
 # Create your views here.
 
-@login_required
 
+
+@api_view(['GET'])
+def api_overview(request):
+    return Response({
+        'List': '/api/notes/',
+        'Detail': '/api/notes/<id>',
+        'Create': '/api/create',
+        'Update': '/api/update/<id>',
+        'Delete': '/api/delete/<id>'
+
+
+    })
+
+
+# @login_required
+@api_view(['GET'])
 def note_list(request):
     
-    notes = Note.objects.filter(user=request.user)
-
-    return render(request, 'yapiapp/note_list.html',{'notes':notes})
+    notes = Note.objects.all()
+    serializer = NoteSerializer(notes, many='true')
+    # return render(request, 'yapiapp/note_list.html',{'notes':notes})
+    return Response(serializer.data)
 
 @login_required
 
