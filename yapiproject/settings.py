@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'yapiapp',
+    'rest_framework.authtoken',
+
 ]
 
 MIDDLEWARE = [
